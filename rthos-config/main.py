@@ -13,6 +13,31 @@ def get_system_info():
         match = re.search(r'\d+(\.\d+)+', output)
         return match.group(0) if match else "Unknown"
 
+    def check_arch_based():
+        try:
+            with open("/etc/os-release") as f:
+                content = f.read().lower()
+                if "arch" in content or "rthos" in content:
+                    return True
+        except FileNotFoundError:
+            pass
+
+        try:
+            with open("/etc/arch-release") as f:
+                return True
+        except FileNotFoundError:
+            pass
+
+        try:
+            subprocess.check_output(["pacman", "-V"])
+            return True
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            pass
+
+        return False
+
+    arch_based = check_arch_based()
+
     try:
         gcc_output = subprocess.check_output(["gcc", "--version"]).decode().split('\n')[0]
         gcc_version = f"GCC {extract_version(gcc_output)}"
@@ -25,12 +50,15 @@ def get_system_info():
     except FileNotFoundError:
         gpp_version = "G++ not installed"
 
+    compatibility = "Compatible" if arch_based else "Incompatible System"
+
     return {
         "Kernel": kernel_version,
         "Python": python_version,
         "GCC": gcc_version,
         "G++": gpp_version,
-        "RthOS Framework": rthos_framework_version
+        "RthOS Framework": rthos_framework_version,
+        "Compatibility": compatibility
     }
 
 # Nachricht anzeigen
