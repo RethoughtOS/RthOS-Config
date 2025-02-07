@@ -1,0 +1,4 @@
+curses  
+platform  
+subprocess  
+re  
