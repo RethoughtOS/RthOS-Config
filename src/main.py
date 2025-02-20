@@ -3,6 +3,9 @@ import platform
 import subprocess
 import re
 import requests  # Für API-Abfragen
+from menus.system_configuration import system_configuration_menu
+from menus.package_management import package_management_menu
+from menus.rthos_setup import rthos_setup_menu
 
 # Systeminformationen abrufen
 def get_system_info():
@@ -163,11 +166,11 @@ def main_menu(stdscr):
             current_row += 1
         elif key in [curses.KEY_ENTER, 10, 13]:
             if current_row == 0:
-                show_message(stdscr, "System Configuration coming soon!")
+                system_configuration_menu(stdscr)
             elif current_row == 1:
-                show_message(stdscr, "Package Management coming soon!")
+                package_management_menu(stdscr)
             elif current_row == 2:
-                show_message(stdscr, "RthOS Setup coming soon!")
+                rthos_setup_menu(stdscr)
             elif current_row == 3:
                 break
         elif key == ord('q'):
